@@ -3,7 +3,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { sb } from '@/lib/supabaseBrowser';
 import { CATEGORIES, TYPES } from '@/lib/categories';
-import { useLang, typeLabel, catLabel } from '@/lib/i18n';
+import { useLang, typeLabel, catLabel, SUBCATS } from '@/lib/i18n';
 import { AssetList } from '@/components/AssetItem';
 
 function BrowseInner({ params }) {
@@ -47,6 +47,13 @@ function BrowseInner({ params }) {
           <button key={c} className={`chip${cat === c ? ' active' : ''}`} onClick={() => setCat(c)}>{catLabel(c, lang)}</button>
         ))}
       </div>
+      {SUBCATS[type] && (
+        <p className="subcats">
+          {(SUBCATS[type][lang] || SUBCATS[type].ko).map(([b, items], i, arr) => (
+            <span key={b}><b>{b}</b> {items}{i < arr.length - 1 ? '  |  ' : ''}</span>
+          ))}
+        </p>
+      )}
       {assets === null ? <div className="empty">{t('common.loading')}</div> : <AssetList assets={filtered} />}
     </div>
   );

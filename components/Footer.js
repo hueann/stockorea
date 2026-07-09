@@ -12,6 +12,7 @@ export default function Footer() {
           <p>
             {t('footer.company')}<br />
             {t('footer.bizNo')}<br />
+            {t('footer.mailOrder')}<br />
             {t('footer.address')}<br />
             hueann1@naver.com · stockorea.com
           </p>
@@ -29,6 +30,8 @@ export default function Footer() {
           <ul>
             <li><Link href="/pricing">{t('nav.pricing')}</Link></li>
             <li><Link href="/license">{t('footer.guideLicense')}</Link></li>
+            <li><Link href="/biz">{t('nav.biz')}</Link></li>
+            <li><Link href="/support">{t('nav.support')}</Link></li>
             <li><Link href="/mypage">{t('nav.mypage')}</Link></li>
           </ul>
         </div>

@@ -8,6 +8,7 @@ function MyPageInner() {
   const { t, lang } = useLang();
   const [user, setUser] = useState(null);
   const [purchases, setPurchases] = useState(null);
+  const [tab, setTab] = useState('purchases'); // purchases | downloads | licenses
   const router = useRouter();
   const paid = useSearchParams().get('paid');
 
@@ -41,37 +42,86 @@ function MyPageInner() {
     return <div className="container"><div className="empty">{t('common.loading')}</div></div>;
   }
 
+  const totalSpent = purchases.reduce((s, p) => s + (p.amount || 0), 0);
+  const licenseCount = purchases.filter((p) => p.licenses?.[0]?.license_no).length;
+  const fmtDate = (d) => new Date(d).toLocaleDateString(lang === 'en' ? 'en-US' : 'ko-KR');
+
+  const TABS = [
+    { key: 'purchases', label: t('mypage.tabPurchases') },
+    { key: 'downloads', label: t('mypage.tabDownloads') },
+    { key: 'licenses', label: t('mypage.tabLicenses') },
+  ];
+
   return (
     <div className="container">
       <h2 className="page-title">{t('mypage.title')}</h2>
       <p className="page-sub">{user.email}</p>
       {paid && <div className="ok-msg">{t('mypage.paidOk')}</div>}
 
-      <h3 className="section-title">{t('mypage.sectionTitle')}</h3>
+      <div className="sub-status">
+        <div className="stat-card"><p>{t('mypage.scMember')}</p><h3>{t('mypage.freeMember')}</h3></div>
+        <div className="stat-card"><p>{t('mypage.scSpent')}</p><h3>{price(totalSpent, lang)}</h3></div>
+        <div className="stat-card"><p>{t('mypage.scOrders')}</p><h3>{purchases.length}<small> {t('mypage.unit')}</small></h3></div>
+        <div className="stat-card"><p>{t('mypage.scLicenses')}</p><h3>{licenseCount}<small> {t('mypage.unit')}</small></h3></div>
+      </div>
+
+      <div className="my-tabs">
+        {TABS.map((tb) => (
+          <button key={tb.key} className={tab === tb.key ? 'active' : ''} onClick={() => setTab(tb.key)}>{tb.label}</button>
+        ))}
+      </div>
+
       {purchases.length === 0 ? (
         <div className="empty">{t('mypage.emptyMine')}</div>
       ) : (
         <div style={{ overflowX: 'auto' }}>
-          <table className="data">
-            <thead>
-              <tr><th>{t('mypage.thDate')}</th><th>{t('mypage.thItem')}</th><th>{t('mypage.thType')}</th><th>{t('mypage.thAmount')}</th><th>{t('mypage.thLicense')}</th><th></th></tr>
-            </thead>
-            <tbody>
-              {purchases.map((p) => (
-                <tr key={p.id}>
-                  <td>{new Date(p.created_at).toLocaleDateString(lang === 'en' ? 'en-US' : 'ko-KR')}</td>
-                  <td>{p.assets ? assetTitle(p.assets, lang) : '-'}</td>
-                  <td>{p.assets ? typeLabel(p.assets.type, lang) : '-'}</td>
-                  <td>{price(p.amount, lang)}</td>
-                  <td style={{ fontFamily: 'monospace', fontSize: 13 }}>
-                    {p.licenses?.[0]?.license_no || '-'}
-                    <span className="status-tag ok" style={{ marginLeft: 8 }}>{t('mypage.commercial')}</span>
-                  </td>
-                  <td><button className="btn" onClick={() => download(p.assets?.id)}>{t('mypage.download')}</button></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {tab === 'purchases' && (
+            <table className="data">
+              <thead><tr><th>{t('mypage.thDate')}</th><th>{t('mypage.thItem')}</th><th>{t('mypage.thType')}</th><th>{t('mypage.thAmount')}</th><th></th></tr></thead>
+              <tbody>
+                {purchases.map((p) => (
+                  <tr key={p.id}>
+                    <td>{fmtDate(p.created_at)}</td>
+                    <td>{p.assets ? assetTitle(p.assets, lang) : '-'}</td>
+                    <td>{p.assets ? typeLabel(p.assets.type, lang) : '-'}</td>
+                    <td>{price(p.amount, lang)}</td>
+                    <td><span className="status-tag ok">{t('mypage.commercial')}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          {tab === 'downloads' && (
+            <table className="data">
+              <thead><tr><th>{t('mypage.thDate')}</th><th>{t('mypage.thItem')}</th><th>{t('mypage.thType')}</th><th>{t('mypage.thFormat')}</th><th></th></tr></thead>
+              <tbody>
+                {purchases.map((p) => (
+                  <tr key={p.id}>
+                    <td>{fmtDate(p.created_at)}</td>
+                    <td>{p.assets ? assetTitle(p.assets, lang) : '-'}</td>
+                    <td>{p.assets ? typeLabel(p.assets.type, lang) : '-'}</td>
+                    <td>{p.assets?.format || '-'}</td>
+                    <td><button className="btn" onClick={() => download(p.assets?.id)}>{t('mypage.redownload')}</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          {tab === 'licenses' && (
+            <table className="data">
+              <thead><tr><th>{t('mypage.thLicense')}</th><th>{t('mypage.thItem')}</th><th>{t('mypage.thScope')}</th><th>{t('mypage.thIssued')}</th></tr></thead>
+              <tbody>
+                {purchases.map((p) => (
+                  <tr key={p.id}>
+                    <td style={{ fontFamily: 'monospace', fontSize: 13 }}>{p.licenses?.[0]?.license_no || '-'}</td>
+                    <td>{p.assets ? assetTitle(p.assets, lang) : '-'}</td>
+                    <td><span className="status-tag ok">{t('mypage.commercial')}</span></td>
+                    <td>{p.licenses?.[0]?.created_at ? fmtDate(p.licenses[0].created_at) : '-'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       )}
 

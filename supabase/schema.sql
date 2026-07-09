@@ -116,6 +116,29 @@ create policy "previews_public_read" on storage.objects for select
   using (bucket_id = 'previews');
 
 -- ============================================================
+-- 기업문의 접수 (Business inquiries)
+-- 누구나 접수(insert), 조회·상태변경은 관리자만
+-- ============================================================
+create table if not exists public.inquiries (
+  id uuid primary key default gen_random_uuid(),
+  type text not null,
+  company text,
+  contact_name text,
+  email text,
+  phone text,
+  message text,
+  status text not null default 'pending', -- 'pending' | 'in_progress' | 'done'
+  created_at timestamptz not null default now()
+);
+alter table public.inquiries enable row level security;
+drop policy if exists "inquiries_insert_any" on public.inquiries;
+create policy "inquiries_insert_any" on public.inquiries for insert with check (true);
+drop policy if exists "inquiries_select_admin" on public.inquiries;
+create policy "inquiries_select_admin" on public.inquiries for select using (public.is_admin());
+drop policy if exists "inquiries_update_admin" on public.inquiries;
+create policy "inquiries_update_admin" on public.inquiries for update using (public.is_admin());
+
+-- ============================================================
 -- 관리자 지정: 가입 후 아래 SQL을 본인 이메일로 실행
 -- update public.profiles set role = 'admin' where email = 'hueann1@naver.com';
 -- ============================================================

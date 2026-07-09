@@ -40,6 +40,7 @@ export default function Header() {
           <Link href="/browse/video">{t('nav.video')}</Link>
           <Link href="/pricing">{t('nav.pricing')}</Link>
           <Link href="/license">{t('nav.license')}</Link>
+          <Link href="/biz">{t('nav.biz')}</Link>
         </nav>
         <div className="header-actions">
           <button
