@@ -43,10 +43,15 @@ create table if not exists public.assets (
   price int not null default 0,          -- 원 단위, 0이면 무료
   preview_path text,                     -- previews 버킷 (공개)
   file_path text not null,               -- originals 버킷 (비공개)
+  thumbnail_path text,                   -- previews 버킷 (공개 썸네일)
+  license text not null default 'commercial', -- 'commercial' | 'extended'
   status text not null default 'active', -- 'active' | 'hidden' | 'pending'
   downloads int not null default 0,
   created_at timestamptz not null default now()
 );
+-- 기존 테이블 보강 (재실행 시)
+alter table public.assets add column if not exists thumbnail_path text;
+alter table public.assets add column if not exists license text not null default 'commercial';
 
 -- 3) 구매
 create table if not exists public.purchases (

@@ -42,8 +42,11 @@ export function VideoCard({ asset }) {
       <div className="thumb" style={{ background: gradientFor(asset.id) }}>
         {asset.preview_path ? (
           <video src={previewUrl(asset.preview_path)} muted loop playsInline preload="metadata"
+            poster={asset.thumbnail_path ? previewUrl(asset.thumbnail_path) : undefined}
             onMouseOver={(e) => e.target.play().catch(() => {})}
             onMouseOut={(e) => { e.target.pause(); }} />
+        ) : asset.thumbnail_path ? (
+          <img src={previewUrl(asset.thumbnail_path)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         ) : (
           <span>🎬</span>
         )}

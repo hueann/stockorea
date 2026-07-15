@@ -188,7 +188,10 @@ export default function AdminPage() {
                         <td>{won(a.price)}</td>
                         <td>{a.downloads || 0}</td>
                         <td><span className={`status-tag ${a.status === 'active' ? 'ok' : a.status === 'pending' ? 'pending' : 'off'}`}>{a.status === 'active' ? '판매중' : a.status === 'pending' ? '검수 대기' : '숨김'}</span></td>
-                        <td><button className="btn btn-sm" onClick={() => toggleStatus(a)}>{a.status === 'active' ? '숨기기' : '판매'}</button></td>
+                        <td style={{ whiteSpace: 'nowrap' }}>
+                          <Link href={`/admin/contents/${a.id}/edit`} className="btn btn-sm" style={{ marginRight: 6 }}>수정</Link>
+                          <button className="btn btn-sm" onClick={() => toggleStatus(a)}>{a.status === 'active' ? '숨기기' : '판매'}</button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>

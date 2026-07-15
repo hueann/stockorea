@@ -73,7 +73,7 @@ export default function AssetDetail({ params }) {
             {asset.resolution && <div><p>{t('detail.resolution')}</p><b>{asset.resolution}</b></div>}
             {asset.mood && <div><p>{t('detail.mood')}</p><b>{asset.mood}</b></div>}
             <div><p>{t('detail.uploaded')}</p><b>{new Date(asset.created_at).toLocaleDateString(lang === 'en' ? 'en-US' : 'ko-KR')}</b></div>
-            <div><p>{t('detail.license')}</p><b>{t('detail.licenseVal')}</b></div>
+            <div><p>{t('detail.license')}</p><b>{asset.license === 'extended' ? (lang === 'en' ? 'Extended license' : '확장 라이선스') : t('detail.licenseVal')}</b></div>
           </div>
           {asset.description && <p style={{ fontSize: 14, color: '#374151', lineHeight: 1.8 }}>{asset.description}</p>}
           {asset.tags?.length > 0 && (
