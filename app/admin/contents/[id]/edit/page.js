@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { sb } from '@/lib/supabaseBrowser';
+import { uploadFile } from '@/lib/uploadClient';
 import { CATEGORIES } from '@/lib/categories';
 
 export default function EditAsset({ params }) {
@@ -51,20 +52,26 @@ export default function EditAsset({ params }) {
     setErr(null); setMsg(null); setBusy(true);
     try {
       const { data: { session } } = await sb().auth.getSession();
-      const fd = new FormData();
+      const payload = {};
       ['type', 'title', 'title_en', 'description', 'category', 'subcategory', 'mood', 'tags',
         'duration', 'bpm', 'resolution', 'format', 'price', 'license', 'status']
-        .forEach((k) => fd.append(k, form[k] ?? ''));
-      if (files.original) fd.append('original', files.original);
-      if (files.preview) fd.append('preview', files.preview);
-      if (files.thumbnail) fd.append('thumbnail', files.thumbnail);
+        .forEach((k) => { payload[k] = form[k] ?? ''; });
+
+      // 파일은 브라우저에서 스토리지로 직접 업로드 (Vercel 본문 제한 우회)
+      if (files.original || files.preview || files.thumbnail) setMsg('파일 업로드 중… (크기에 따라 시간이 걸릴 수 있습니다)');
+      if (files.original) payload.file_path = await uploadFile('originals', form.type, files.original);
+      if (files.preview) payload.preview_path = await uploadFile('previews', form.type, files.preview);
+      if (files.thumbnail) payload.thumbnail_path = await uploadFile('previews', form.type, files.thumbnail);
+
       const res = await fetch(`/api/admin/assets/${id}`, {
-        method: 'PATCH', headers: { Authorization: `Bearer ${session.access_token}` }, body: fd,
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       });
       const j = await res.json();
       if (!res.ok) throw new Error(j.error || '수정 실패');
       router.push('/admin');
-    } catch (e2) { setErr(e2.message); setBusy(false); }
+    } catch (e2) { setErr(e2.message); setBusy(false); setMsg(null); }
   }
 
   async function remove() {

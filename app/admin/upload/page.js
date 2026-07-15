@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { sb } from '@/lib/supabaseBrowser';
+import { uploadFile } from '@/lib/uploadClient';
 import { CATEGORIES } from '@/lib/categories';
 
 const empty = {
@@ -32,15 +33,16 @@ export default function AdminUpload() {
     setBusy(true);
     try {
       const { data: { session } } = await sb().auth.getSession();
-      const fd = new FormData();
-      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
-      fd.append('original', original);
-      if (preview) fd.append('preview', preview);
+      // 파일은 브라우저에서 스토리지로 직접 업로드 (Vercel 4.5MB 본문 제한 우회)
       setProgress('파일 업로드 중… (파일 크기에 따라 시간이 걸릴 수 있습니다)');
+      const file_path = await uploadFile('originals', form.type, original);
+      const preview_path = preview ? await uploadFile('previews', form.type, preview) : null;
+
+      setProgress('콘텐츠 등록 중…');
       const res = await fetch('/api/admin/upload', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${session.access_token}` },
-        body: fd,
+        headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, file_path, preview_path }),
       });
       const j = await res.json();
       if (!res.ok) throw new Error(j.error || '업로드 실패');

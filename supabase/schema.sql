@@ -120,6 +120,14 @@ insert into storage.buckets (id, name, public) values ('originals','originals', 
 create policy "previews_public_read" on storage.objects for select
   using (bucket_id = 'previews');
 
+-- 관리자만 브라우저에서 스토리지에 직접 업로드 (Vercel 본문 제한 우회)
+drop policy if exists "originals_admin_insert" on storage.objects;
+create policy "originals_admin_insert" on storage.objects for insert to authenticated
+  with check (bucket_id = 'originals' and public.is_admin());
+drop policy if exists "previews_admin_insert" on storage.objects;
+create policy "previews_admin_insert" on storage.objects for insert to authenticated
+  with check (bucket_id = 'previews' and public.is_admin());
+
 -- ============================================================
 -- 기업문의 접수 (Business inquiries)
 -- 누구나 접수(insert), 조회·상태변경은 관리자만

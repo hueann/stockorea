@@ -1,13 +1,6 @@
 import { NextResponse } from 'next/server';
 import { admin, userFromRequest, isAdminUser } from '@/lib/supabaseServer';
 
-export const maxDuration = 60;
-
-function safeName(name) {
-  const ext = name && name.includes('.') ? name.split('.').pop() : 'bin';
-  return `${crypto.randomUUID()}.${ext}`;
-}
-
 async function requireAdmin(req) {
   const user = await userFromRequest(req);
   if (!user) return { error: NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 }) };
@@ -17,7 +10,7 @@ async function requireAdmin(req) {
   return { user };
 }
 
-// ── 수정 ──
+// ── 수정 (파일은 브라우저가 스토리지에 직접 업로드하고, 여기엔 경로만 전달) ──
 export async function PATCH(req, { params }) {
   const gate = await requireAdmin(req);
   if (gate.error) return gate.error;
@@ -26,57 +19,45 @@ export async function PATCH(req, { params }) {
   const { data: existing, error: eGet } = await a.from('assets').select('*').eq('id', params.id).single();
   if (eGet || !existing) return NextResponse.json({ error: '콘텐츠를 찾을 수 없습니다.' }, { status: 404 });
 
-  const fd = await req.formData();
-  const type = String(fd.get('type') || existing.type);
+  let body;
+  try { body = await req.json(); } catch { return NextResponse.json({ error: '잘못된 요청입니다.' }, { status: 400 }); }
 
-  // 파일 교체 처리 (없으면 기존 유지)
-  let file_path = existing.file_path;
-  let preview_path = existing.preview_path;
-  let thumbnail_path = existing.thumbnail_path;
+  const has = (k) => Object.prototype.hasOwnProperty.call(body, k);
+  const str = (k, cur) => (has(k) ? (String(body[k] ?? '').trim() || null) : cur);
+
+  // 새 경로가 오면 교체 + 옛 파일 삭제 대상, 없으면 기존 유지
   const toRemove = { originals: [], previews: [] };
-
-  async function replace(field, bucket, current) {
-    const f = fd.get(field);
-    if (!f || typeof f === 'string' || f.size === 0) return current; // 새 파일 없음 → 유지
-    const path = `${type}/${safeName(f.name)}`;
-    const { error } = await a.storage.from(bucket).upload(path, f, { contentType: f.type || 'application/octet-stream' });
-    if (error) throw new Error(`${field} 업로드 실패: ${error.message}`);
-    if (current) toRemove[bucket].push(current); // 교체 후 옛 파일 삭제 대상
-    return path;
+  function pathField(k, bucket, current) {
+    if (has(k) && body[k] && body[k] !== current) {
+      if (current) toRemove[bucket].push(current);
+      return body[k];
+    }
+    return current;
   }
+  const file_path = pathField('file_path', 'originals', existing.file_path);
+  const preview_path = pathField('preview_path', 'previews', existing.preview_path);
+  const thumbnail_path = pathField('thumbnail_path', 'previews', existing.thumbnail_path);
 
-  try {
-    file_path = await replace('original', 'originals', existing.file_path);
-    preview_path = await replace('preview', 'previews', existing.preview_path);
-    thumbnail_path = await replace('thumbnail', 'previews', existing.thumbnail_path);
-  } catch (e) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
-  }
-
-  const has = (k) => fd.has(k);
-  const str = (k, cur) => (has(k) ? (String(fd.get(k) || '') || null) : cur);
-  const tagsRaw = fd.get('tags');
   const tags = has('tags')
-    ? String(tagsRaw || '').split(',').map((t) => t.trim()).filter(Boolean)
+    ? String(body.tags || '').split(',').map((t) => t.trim()).filter(Boolean)
     : existing.tags;
-  const bpmRaw = fd.get('bpm');
 
   const update = {
-    type,
-    title: has('title') ? String(fd.get('title') || '') : existing.title,
+    type: has('type') ? String(body.type || existing.type) : existing.type,
+    title: has('title') ? String(body.title || '') : existing.title,
     title_en: str('title_en', existing.title_en),
     description: str('description', existing.description),
-    category: has('category') ? String(fd.get('category') || '') : existing.category,
+    category: has('category') ? String(body.category || '') : existing.category,
     subcategory: str('subcategory', existing.subcategory),
     mood: str('mood', existing.mood),
     tags,
     duration: str('duration', existing.duration),
-    bpm: has('bpm') ? (String(bpmRaw || '') ? Number(bpmRaw) : null) : existing.bpm,
+    bpm: has('bpm') ? (String(body.bpm ?? '').trim() ? Number(body.bpm) : null) : existing.bpm,
     resolution: str('resolution', existing.resolution),
     format: str('format', existing.format),
-    price: has('price') ? Number(fd.get('price') || 0) : existing.price,
-    license: has('license') ? String(fd.get('license') || 'commercial') : existing.license,
-    status: has('status') ? String(fd.get('status') || 'active') : existing.status,
+    price: has('price') ? Number(body.price || 0) : existing.price,
+    license: has('license') ? String(body.license || 'commercial') : existing.license,
+    status: has('status') ? String(body.status || 'active') : existing.status,
     file_path,
     preview_path,
     thumbnail_path,
@@ -85,7 +66,6 @@ export async function PATCH(req, { params }) {
   const { error: eUpd } = await a.from('assets').update(update).eq('id', params.id);
   if (eUpd) return NextResponse.json({ error: '수정 저장 실패: ' + eUpd.message }, { status: 500 });
 
-  // 교체된 옛 파일 정리 (실패해도 무시)
   if (toRemove.originals.length) await a.storage.from('originals').remove(toRemove.originals).catch(() => {});
   if (toRemove.previews.length) await a.storage.from('previews').remove(toRemove.previews).catch(() => {});
 
