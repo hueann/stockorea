@@ -101,7 +101,8 @@ export default function AdminUpload() {
           <div className="form-group"><label>판매가 (원, 0 = 무료)</label>
             <input type="number" value={form.price} onChange={(e) => set('price', e.target.value)} min={0} required /></div>
           <div className="form-group"><label>원본 파일 * (구매자에게 제공)</label>
-            <input type="file" onChange={(e) => setOriginal(e.target.files[0])} required /></div>
+            <input type="file" onChange={(e) => setOriginal(e.target.files[0])} required />
+            <p style={{ fontSize: 12, color: 'var(--gray)', marginTop: 4 }}>※ 파일당 최대 50MB (영상은 압축 권장).</p></div>
           <div className="form-group">
             <label>미리보기 파일 (음악·효과음: 워터마크 MP3 / 영상: 저해상도 MP4)</label>
             <input type="file" onChange={(e) => setPreview(e.target.files[0])} />
