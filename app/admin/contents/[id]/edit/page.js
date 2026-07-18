@@ -151,7 +151,7 @@ export default function EditAsset({ params }) {
           </div>
 
           <h3 className="section-title" style={{ fontSize: 16, marginTop: 8 }}>파일 (교체할 때만 선택 — 비우면 기존 유지)</h3>
-          <p style={{ fontSize: 12, color: 'var(--gray)', marginTop: -8, marginBottom: 8 }}>※ 파일당 최대 50MB (영상은 압축 권장). 초과 시 업로드가 거부됩니다.</p>
+          <p style={{ fontSize: 12, color: 'var(--gray)', marginTop: -8, marginBottom: 8 }}>※ 파일당 최대 50GB. 수 GB급 대용량은 업로드에 시간이 걸릴 수 있습니다(중간에 창을 닫지 마세요).</p>
           <FileRow label="원본 파일 (originals)" current={form.file_path} onChange={(f) => setFiles((s) => ({ ...s, original: f }))} />
           <FileRow label="미리보기 파일 (previews)" current={form.preview_path} onChange={(f) => setFiles((s) => ({ ...s, preview: f }))} />
           <FileRow label="썸네일 (previews)" current={form.thumbnail_path} onChange={(f) => setFiles((s) => ({ ...s, thumbnail: f }))} />
