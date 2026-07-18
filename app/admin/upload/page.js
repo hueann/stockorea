@@ -15,6 +15,7 @@ export default function AdminUpload() {
   const [form, setForm] = useState(empty);
   const [original, setOriginal] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(null);
   const [progress, setProgress] = useState('');
@@ -37,12 +38,13 @@ export default function AdminUpload() {
       setProgress('파일 업로드 중… (파일 크기에 따라 시간이 걸릴 수 있습니다)');
       const file_path = await uploadFile('originals', form.type, original);
       const preview_path = preview ? await uploadFile('previews', form.type, preview) : null;
+      const thumbnail_path = thumbnail ? await uploadFile('previews', form.type, thumbnail) : null;
 
       setProgress('콘텐츠 등록 중…');
       const res = await fetch('/api/admin/upload', {
         method: 'POST',
         headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, file_path, preview_path }),
+        body: JSON.stringify({ ...form, file_path, preview_path, thumbnail_path }),
       });
       const j = await res.json();
       if (!res.ok) throw new Error(j.error || '업로드 실패');
@@ -108,6 +110,13 @@ export default function AdminUpload() {
             <input type="file" onChange={(e) => setPreview(e.target.files[0])} />
             <p style={{ fontSize: 12, color: 'var(--gray)', marginTop: 4 }}>
               ※ 비워두면 미리듣기/미리보기 없이 게시됩니다. 원본 유출 방지를 위해 원본과 다른 파일을 권장합니다.
+            </p>
+          </div>
+          <div className="form-group">
+            <label>썸네일 (previews · 이미지 — 영상 목록/카드 대표 이미지)</label>
+            <input type="file" accept="image/*" onChange={(e) => setThumbnail(e.target.files[0])} />
+            <p style={{ fontSize: 12, color: 'var(--gray)', marginTop: 4 }}>
+              ※ 영상 카드의 대표 이미지(poster)로 사용됩니다. 비워두면 미리보기 영상 첫 프레임이 표시됩니다.
             </p>
           </div>
           {progress && <div className="ok-msg">{progress}</div>}
