@@ -111,6 +111,11 @@ export default function AdminUpload() {
             <p style={{ fontSize: 12, color: 'var(--gray)', marginTop: 4 }}>
               ※ 비워두면 미리듣기/미리보기 없이 게시됩니다. 원본 유출 방지를 위해 원본과 다른 파일을 권장합니다.
             </p>
+            {preview && preview.type?.startsWith('video') && preview.size > 50 * 1024 * 1024 && (
+              <p style={{ fontSize: 12, color: '#b45309', marginTop: 6 }}>
+                ⚠ 미리보기가 {(preview.size / 1048576).toFixed(0)}MB로 큽니다. 미리보기는 <b>720p·저비트레이트로 압축</b>해 올리면 버퍼링 없이 재생됩니다. (원본은 그대로 아래 원본 파일로)
+              </p>
+            )}
           </div>
           <div className="form-group">
             <label>썸네일 (previews · 이미지 — 영상 목록/카드 대표 이미지)</label>
