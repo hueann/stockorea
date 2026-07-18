@@ -4,6 +4,7 @@ import { previewUrl } from '@/lib/supabaseBrowser';
 import { gradientFor } from '@/lib/categories';
 import { useLang, assetTitle, catLabel, price } from '@/lib/i18n';
 import Waveform from '@/components/Waveform';
+import Watermark from '@/components/Watermark';
 
 function subline(asset, lang) {
   if (lang === 'en') return catLabel(asset.category, 'en');
@@ -50,6 +51,7 @@ export function VideoCard({ asset }) {
         ) : (
           <span>🎬</span>
         )}
+        <Watermark tiles={16} />
         {asset.duration && <span className="dur">{asset.duration}</span>}
       </div>
       <div className="card-body">

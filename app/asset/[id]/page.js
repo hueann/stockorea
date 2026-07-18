@@ -5,6 +5,7 @@ import { sb, previewUrl } from '@/lib/supabaseBrowser';
 import { gradientFor } from '@/lib/categories';
 import { useLang, typeLabel, catLabel, assetTitle, price } from '@/lib/i18n';
 import Waveform from '@/components/Waveform';
+import Watermark from '@/components/Watermark';
 
 export default function AssetDetail({ params }) {
   const [asset, setAsset] = useState(null);
@@ -64,6 +65,7 @@ export default function AssetDetail({ params }) {
             ) : (
               <span>{isVideo ? '🎬' : '🎵'}</span>
             )}
+            {isVideo && <Watermark />}
           </div>
           <div className="spec">
             <div><p>{t('detail.category')}</p><b>{typeLabel(asset.type, lang)} · {catLabel(asset.category, lang)}</b></div>
