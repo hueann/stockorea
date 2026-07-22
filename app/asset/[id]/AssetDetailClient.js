@@ -7,14 +7,15 @@ import { useLang, typeLabel, catLabel, assetTitle, price } from '@/lib/i18n';
 import Waveform from '@/components/Waveform';
 import Watermark from '@/components/Watermark';
 
-export default function AssetDetailClient({ params }) {
-  const [asset, setAsset] = useState(null);
+export default function AssetDetailClient({ params, initialAsset = null }) {
+  const [asset, setAsset] = useState(initialAsset);
   const [notFound, setNotFound] = useState(false);
   const [busy, setBusy] = useState(false);
   const router = useRouter();
   const { t, lang } = useLang();
 
   useEffect(() => {
+    if (asset) return; // 서버에서 이미 받아온 경우 재조회 불필요
     sb().from('assets').select('*').eq('id', params.id).single()
       .then(({ data, error }) => {
         if (error || !data) setNotFound(true);
@@ -74,7 +75,7 @@ export default function AssetDetailClient({ params }) {
             {asset.bpm && <div><p>{t('detail.bpm')}</p><b>{asset.bpm}</b></div>}
             {asset.resolution && <div><p>{t('detail.resolution')}</p><b>{asset.resolution}</b></div>}
             {asset.mood && <div><p>{t('detail.mood')}</p><b>{asset.mood}</b></div>}
-            <div><p>{t('detail.uploaded')}</p><b>{new Date(asset.created_at).toLocaleDateString(lang === 'en' ? 'en-US' : 'ko-KR')}</b></div>
+            <div><p>{t('detail.uploaded')}</p><b>{String(asset.created_at).slice(0, 10).replace(/-/g, '.')}</b></div>
             <div><p>{t('detail.license')}</p><b>{asset.license === 'extended' ? (lang === 'en' ? 'Extended license' : '확장 라이선스') : t('detail.licenseVal')}</b></div>
           </div>
           {asset.description && <p style={{ fontSize: 14, color: '#374151', lineHeight: 1.8 }}>{asset.description}</p>}
