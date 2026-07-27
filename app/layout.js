@@ -15,7 +15,10 @@ export const metadata = {
   },
   description: DEFAULT_DESC,
   keywords: ['스톡코리아', '한국 스톡영상', '국악 BGM', '전통시장 효과음', '로열티 프리', 'korean stock footage', 'korean ambience', 'k-sound'],
-  alternates: { canonical: '/' },
+  alternates: {
+    canonical: '/',
+    types: { 'application/rss+xml': '/rss.xml' },
+  },
   verification: { google: '6sZmZx1pJhEMFGWRMR0K3pJrrp7HN0Otlys44w4shwA' },
   openGraph: {
     type: 'website',
