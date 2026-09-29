@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { sb, previewUrl } from '@/lib/supabaseBrowser';
 import { gradientFor } from '@/lib/categories';
-import { useLang, typeLabel, catLabel, assetTitle, price } from '@/lib/i18n';
+import { useLang, typeLabel, catLabel, assetTitle } from '@/lib/i18n';
 import Waveform from '@/components/Waveform';
 import Watermark from '@/components/Watermark';
 
@@ -85,7 +85,6 @@ export default function AssetDetailClient({ params, initialAsset = null }) {
         </div>
         <div>
           <div className="buy-box">
-            <div className="p">{price(asset.price, lang)}</div>
             <div className="n">{t('detail.buyNote')}</div>
             <button className="btn btn-primary btn-lg" onClick={buy} disabled={busy}>
               {asset.price === 0 ? t('detail.freeDownload') : t('detail.buyNow')}

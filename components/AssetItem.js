@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { previewUrl } from '@/lib/supabaseBrowser';
 import { gradientFor } from '@/lib/categories';
-import { useLang, assetTitle, catLabel, price } from '@/lib/i18n';
+import { useLang, assetTitle, catLabel } from '@/lib/i18n';
 import Waveform from '@/components/Waveform';
 import Watermark from '@/components/Watermark';
 
@@ -24,7 +24,6 @@ export function TrackRow({ asset }) {
         </Link>
         <div className="track-side">
           {asset.duration && <span className="track-meta">{asset.duration}</span>}
-          <span className="price">{price(asset.price, lang)}</span>
         </div>
       </div>
       {pv ? (
@@ -58,7 +57,6 @@ export function VideoCard({ asset }) {
         <h4>{assetTitle(asset, lang)}</h4>
         <p>{lang === 'en' ? catLabel(asset.category, 'en') : `${asset.category}${asset.subcategory ? ` · ${asset.subcategory}` : ''}`}</p>
         <div className="price-row">
-          <span className="price">{price(asset.price, lang)}</span>
           {asset.resolution && <span style={{ fontSize: 12, color: 'var(--gray)' }}>{asset.resolution}</span>}
         </div>
       </div>
