@@ -26,6 +26,14 @@ export default function Footer() {
           </ul>
         </div>
         <div>
+          <h4>{t('nav.services')}</h4>
+          <ul>
+            <li><Link href="/services/video-production">{t('nav.svcVideo')}</Link></li>
+            <li><Link href="/services/location-sound">{t('nav.svcLocation')}</Link></li>
+            <li><Link href="/services/sound-mixing">{t('nav.svcMix')}</Link></li>
+          </ul>
+        </div>
+        <div>
           <h4>{t('footer.guideHead')}</h4>
           <ul>
             <li><Link href="/pricing">{t('nav.pricing')}</Link></li>

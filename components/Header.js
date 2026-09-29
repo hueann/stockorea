@@ -44,6 +44,14 @@ export default function Header() {
             <Link href="/browse/music" onClick={close}>{t('nav.music')}</Link>
             <Link href="/browse/sfx" onClick={close}>{t('nav.sfx')}</Link>
             <Link href="/browse/video" onClick={close}>{t('nav.video')}</Link>
+            <div className="nav-sub">
+              <Link href="/services" onClick={close}>{t('nav.services')}<span className="caret" aria-hidden="true"> ▾</span></Link>
+              <div className="sub-menu">
+                <Link href="/services/video-production" onClick={close}>{t('nav.svcVideo')}</Link>
+                <Link href="/services/location-sound" onClick={close}>{t('nav.svcLocation')}</Link>
+                <Link href="/services/sound-mixing" onClick={close}>{t('nav.svcMix')}</Link>
+              </div>
+            </div>
             <Link href="/pricing" onClick={close}>{t('nav.pricing')}</Link>
             <Link href="/license" onClick={close}>{t('nav.license')}</Link>
             <Link href="/biz" onClick={close}>{t('nav.biz')}</Link>
