@@ -19,7 +19,10 @@ export const metadata = {
     canonical: '/',
     types: { 'application/rss+xml': '/rss.xml' },
   },
-  verification: { google: '6sZmZx1pJhEMFGWRMR0K3pJrrp7HN0Otlys44w4shwA' },
+  verification: {
+    google: '6sZmZx1pJhEMFGWRMR0K3pJrrp7HN0Otlys44w4shwA',
+    other: { 'naver-site-verification': '24752f8c5b4537aefee95b01fc9f489a3c2d3441' },
+  },
   openGraph: {
     type: 'website',
     siteName: SITE_NAME,
