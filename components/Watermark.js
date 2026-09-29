@@ -6,7 +6,7 @@ export default function Watermark({ tiles = 48 }) {
     <div className="wm-overlay" aria-hidden="true">
       <div className="wm-grid">
         {Array.from({ length: tiles }).map((_, i) => (
-          <span className="wm-logo" key={i}><Logo /></span>
+          <span className="wm-logo" key={i}><Logo white /></span>
         ))}
       </div>
     </div>

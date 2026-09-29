@@ -8,7 +8,7 @@ export default function Footer() {
     <footer className="site">
       <div className="container">
         <div style={{ maxWidth: 340 }}>
-          <h4>스톡코리아 STOCKOREA</h4>
+          <img src="/logo-dark-bg.png" alt="스톡코리아 STOCKOREA" style={{ height: 26, width: 'auto', marginBottom: 12 }} draggable={false} />
           <p>
             {t('footer.company')}<br />
             {t('footer.bizNo')}<br />

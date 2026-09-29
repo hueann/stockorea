@@ -10,8 +10,8 @@ button{cursor:pointer;font-family:inherit}
 /* Header */
 header.site{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid var(--border)}
 .header-inner{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:20px;padding:0 24px;height:64px;position:relative}
-.logo{display:flex;align-items:center;font-size:18px;font-weight:700;color:#232936;letter-spacing:3px;cursor:pointer;white-space:nowrap}
-.logo svg{height:25px;width:auto;margin:0 2px 2px}
+.logo{display:flex;align-items:center;cursor:pointer;white-space:nowrap}
+.logo img{height:30px;width:auto;display:block}
 .nav-toggle{display:none;background:none;border:none;font-size:22px;color:var(--ink);padding:6px 8px;margin-left:auto;cursor:pointer;line-height:1}
 .nav-wrap{display:flex;align-items:center;gap:20px;flex:1}
 nav.main{display:flex;gap:2px;flex:1}
@@ -84,8 +84,8 @@ nav.main a:hover{background:var(--light)}
 /* Preview watermark (STOCKOREA logo tiled) */
 .wm-overlay{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:2}
 .wm-grid{position:absolute;inset:-45%;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:18px 42px;transform:rotate(-24deg);opacity:.16}
-.wm-logo{display:inline-flex;align-items:center;font-size:13px;font-weight:800;letter-spacing:2px;color:#fff;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.55)}
-.wm-logo svg{height:12px;width:auto;margin:0 1px 1px}
+.wm-logo{display:inline-flex;align-items:center;white-space:nowrap}
+.wm-logo img{height:14px;width:auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))}
 .card-body{padding:14px 16px}
 .card-body h4{font-size:15px;font-weight:600;margin-bottom:4px}
 .card-body p{font-size:13px;color:var(--gray)}
