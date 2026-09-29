@@ -54,6 +54,7 @@ export default function Header() {
             </div>
             <Link href="/pricing" onClick={close}>{t('nav.pricing')}</Link>
             <Link href="/license" onClick={close}>{t('nav.license')}</Link>
+            <Link href="/about" onClick={close}>{t('nav.about')}</Link>
             <Link href="/biz" onClick={close}>{t('nav.biz')}</Link>
           </nav>
           <div className="header-actions">

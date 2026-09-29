@@ -6,7 +6,7 @@ const SITE = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.stockorea.com';
 export const revalidate = 43200;
 
 export default async function sitemap() {
-  const staticPaths = ['', '/browse/music', '/browse/sfx', '/browse/video', '/pricing', '/license', '/biz', '/support'];
+  const staticPaths = ['', '/browse/music', '/browse/sfx', '/browse/video', '/services', '/services/video-production', '/services/location-sound', '/services/sound-mixing', '/about', '/pricing', '/license', '/biz', '/support'];
   const now = new Date();
   const base = staticPaths.map((p) => ({
     url: `${SITE}${p}`,

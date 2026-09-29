@@ -36,6 +36,7 @@ export default function Footer() {
         <div>
           <h4>{t('footer.guideHead')}</h4>
           <ul>
+            <li><Link href="/about">{t('nav.about')}</Link></li>
             <li><Link href="/pricing">{t('nav.pricing')}</Link></li>
             <li><Link href="/license">{t('footer.guideLicense')}</Link></li>
             <li><Link href="/biz">{t('nav.biz')}</Link></li>
