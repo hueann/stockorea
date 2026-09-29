@@ -293,3 +293,11 @@ footer.site p,footer.site li{font-size:13px;line-height:2;list-style:none}
 .svc-cta .btn-cta{display:inline-block;background:var(--brand-red);color:#fff;font-weight:700;border-radius:10px;padding:12px 26px}
 .svc-section-title{font-size:19px;font-weight:700;margin:32px 0 4px}
 @media(max-width:820px){.svc-grid{grid-template-columns:1fr}.svc-list{grid-template-columns:1fr}}
+/* about page */
+.about-hero{font-size:26px;font-weight:800;line-height:1.4;margin:4px 0 18px;letter-spacing:-.01em}
+.about-p{font-size:15px;line-height:1.85;color:var(--ink);margin-bottom:10px}
+.about-p b{font-weight:700}
+.about-eyebrow{letter-spacing:.08em;color:var(--brand-red)}
+.svc-card.diff{background:var(--light);border-color:transparent}
+.about-oneline{margin:32px 0 8px;padding:18px 22px;border-left:4px solid var(--brand-red);background:var(--light);border-radius:0 10px 10px 0;font-size:15px;font-weight:600;line-height:1.7}
+@media(max-width:640px){.about-hero{font-size:21px}}
